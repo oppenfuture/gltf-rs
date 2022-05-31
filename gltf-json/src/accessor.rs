@@ -176,8 +176,9 @@ pub struct Accessor {
     pub buffer_view: Option<Index<buffer::View>>,
 
     /// The offset relative to the start of the parent `BufferView` in bytes.
-    #[serde(default, rename = "byteOffset")]
-    pub byte_offset: u32,
+    #[serde(rename = "byteOffset")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub byte_offset: Option<u32>,
 
     /// The number of components within the buffer view - not to be confused
     /// with the number of bytes in the buffer view.
@@ -230,9 +231,8 @@ impl Validate for Accessor {
         P: Fn() -> Path,
         R: FnMut(&dyn Fn() -> Path, Error),
     {
-        if self.sparse.is_none() && self.buffer_view.is_none() {
-            // If sparse is missing, then bufferView must be present. Report that bufferView is
-            // missing since it is the more common one to require.
+        if self.buffer_view.is_none() && self.byte_offset.is_some() {
+            // byteOffset MUST NOT be defined when bufferView is undefined.
             report(&|| path().field("bufferView"), Error::Missing);
         }
 

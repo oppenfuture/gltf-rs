@@ -120,7 +120,7 @@ impl<'a> Accessor<'a> {
 
     /// Returns the offset relative to the start of the parent buffer view in bytes.
     pub fn offset(&self) -> usize {
-        self.json.byte_offset as usize
+        self.json.byte_offset.unwrap_or(0) as usize
     }
 
     /// Returns the number of components within the buffer view - not to be confused
