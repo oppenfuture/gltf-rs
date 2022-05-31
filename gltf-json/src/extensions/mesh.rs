@@ -45,5 +45,6 @@ pub struct Mapping {
 pub struct KhrDracoMeshCompression {
     #[serde(rename = "bufferView")]
     pub buffer_view: crate::Index<crate::buffer::View>,
-    pub attributes: std::collections::HashMap<crate::validation::Checked<crate::mesh::Semantic>, u32>,
+    pub attributes:
+        std::collections::HashMap<crate::validation::Checked<crate::mesh::Semantic>, u32>,
 }
