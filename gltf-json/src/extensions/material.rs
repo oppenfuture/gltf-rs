@@ -133,7 +133,15 @@ pub struct PbrSpecularGlossiness {
 
 /// Defines the normal texture of a material.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, Validate)]
-pub struct NormalTexture {}
+pub struct NormalTexture {
+    #[cfg(feature = "OFT_texture_highPrecisionNormal")]
+    #[serde(
+        default,
+        rename = "OFT_texture_highPrecisionNormal",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub high_precision_normal: Option<HighPrecisionNormal>,
+}
 
 /// Defines the occlusion texture of a material.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, Validate)]
@@ -413,4 +421,11 @@ pub struct Clearcoat {
     /// The clearcoat normal map texture.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clearcoat_normal_texture: Option<texture::Info>,
+}
+
+#[cfg(feature = "OFT_texture_highPrecisionNormal")]
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+pub struct HighPrecisionNormal {
+    #[serde(rename = "lower8BitTexture")]
+    pub lower_8_bit_texture: crate::texture::Info,
 }
