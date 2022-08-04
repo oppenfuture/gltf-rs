@@ -72,6 +72,14 @@ pub struct Material {
         skip_serializing_if = "Option::is_none"
     )]
     pub clearcoat: Option<Clearcoat>,
+
+    #[cfg(feature = "OFT_materials_refractive_solid")]
+    #[serde(
+        default,
+        rename = "OFT_materials_refractive_solid",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub refractive_solid: Option<RefractiveSolid>,
 }
 
 /// A set of parameter values that are used to define the metallic-roughness
@@ -421,6 +429,41 @@ pub struct Clearcoat {
     /// The clearcoat normal map texture.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clearcoat_normal_texture: Option<texture::Info>,
+}
+
+#[cfg(feature = "OFT_materials_refractive_solid")]
+#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
+#[serde(default, rename_all = "camelCase")]
+pub struct RefractiveSolid {
+    /// Specify mesh proxy of this node.
+    pub geometry_proxy: String,
+    /// Intensity of envmap lighting.
+    pub env_map_intensity: f32,
+    /// Reflectivity.
+    pub reflectivity: f32,
+    /// Refractive index.
+    pub refractive_index: f32,
+    /// Control dispersion.
+    pub r_index_delta: f32,
+    /// Specify how much light would be absorbed in traveling.
+    pub absorbption: [f32; 3],
+    /// Speed of absorbption.
+    pub absorbption_factor: f32,
+}
+
+#[cfg(feature = "OFT_materials_refractive_solid")]
+impl Default for RefractiveSolid {
+    fn default() -> Self {
+        RefractiveSolid {
+            geometry_proxy: String::new(),
+            env_map_intensity: 1.0,
+            reflectivity: 1.0,
+            refractive_index: 1.0,
+            r_index_delta: 0.1,
+            absorbption: [1.0, 1.0, 1.0],
+            absorbption_factor: 1.0,
+        }
+    }
 }
 
 #[cfg(feature = "OFT_texture_highPrecisionNormal")]
